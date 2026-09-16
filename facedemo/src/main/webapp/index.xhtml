@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="primefaces">
+
+<h:head>
+    <title>DMIT2015 JSF Demo</title>
+</h:head>
+
+<h:body>
+
+    <h2>Sapo HPTA Pon tu nombre </h2>
+
+    <h:form>
+
+        <p:messages />
+
+        <p:inputText
+                value="#{greetingBean.firstName}"
+                placeholder="Enter your first name" />
+
+        <p:inputText
+                value="#{greetingBean.lastName}"
+                placeholder="Enter your first name" />
+
+        <br/>
+        <br/>
+
+        <p:commandButton
+                value="Submit"
+                update="@form" />
+
+        <br/>
+        <br/>
+
+        <h:outputText
+                value="#{greetingBean.greetingMessage}" />
+        <h:outputText value="Apache Tomcat + Jakarta Faces" />
+
+
+    </h:form>
+
+</h:body>
+
+</html>
