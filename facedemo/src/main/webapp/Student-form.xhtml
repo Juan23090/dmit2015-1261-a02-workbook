@@ -4,23 +4,144 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns="http://www.w3.org/1999/xhtml">
-<head>
+<h:head>
     <meta charset="UTF-8"/>
     <title>Simple Facelet Page</title>
-</head>
-<body>
-<ui:fragment>
+</h:head>
 
-</ui:fragment>
 
-<h:form>
-    <h:outputLabel for="name" value=""/>
-    <h:inputText id="name" value=""/>
-    <h:commandButton value="Submit" action=""/>
-</h:form>
 
-<ui:fragment>
+<h:body>
 
-</ui:fragment>
-</body>
+
+    <h:form>
+        <p:messages showDetail="true" />
+        <p:panel header="Student Registration">
+
+            <p:outputLabel for="fullName" value="Full Name" />
+            <p:inputText id="fullName"
+                         value="#{studentFormBean.studentInfo.fullName}"
+                         required="true"
+                         requiredMessage="Full Name is required" />
+            <br /><br />
+
+            <p:outputLabel for="program" value="Program" />
+            <p:selectOneMenu id="program"
+                             value="#{studentFormBean.studentInfo.program}"
+                             required="true"
+                             requiredMessage="Program is required">
+                <f:selectItem itemLabel="Select Program"
+                              itemValue=""
+                              noSelectionOption="true" />
+
+                <f:selectItem itemLabel="Digital Media and IT"
+                              itemValue="DMIT" />
+
+                <f:selectItem itemLabel="Software Development"
+                              itemValue="SDEV" />
+            </p:selectOneMenu>
+            <br /><br />
+
+            <p:selectBooleanCheckbox id="fullTime"
+                                     value="#{studentFormBean.studentInfo.fullTime}" />
+            <p:outputLabel for="fullTime"
+                           value="Full Time Student" />
+            <br /><br />
+
+            <p:commandButton value="Submit"
+                             action="#{studentFormBean.submit()}"
+                             update="@form"
+                             process="@form" />
+
+            <h:outputText value="Successful submissions: #{studentFormBean.submissionCount}" />
+
+        </p:panel>
+
+
+
+        <p:dataTable id = "studnetsDataTable"
+                     value="#{studentListSession.students}"
+                     var = "currentStudent">
+
+            <p:column headerText="Full Names">
+                <h:outputText value="#{currentStudent.fullName}" />
+
+            </p:column>
+
+            <p:column headerText="Program">
+                <h:outputText value="#{currentStudent.program}" />
+
+            </p:column>
+
+            <p:column headerText="Full Time">
+                <h:selectBooleanCheckbox value="#{currentStudent.fullTime}" disabled="true"/>
+
+            </p:column>
+
+            <p:column headerText="Action">
+                <p:commandButton value="Remove"
+                                 action="#{studentListSession.remove(currentStudent)}"
+                                 update="studnetsDataTable"
+                                 process="@this" />
+
+
+
+
+            </p:column>
+
+
+
+
+        </p:dataTable>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!--        &lt;!&ndash; NEW PART: STUDENT TABLE &ndash;&gt;-->
+        <!--        <p:dataTable id="studentsDataTable"-->
+        <!--                     value="#{studentListSession.students}"-->
+        <!--                     var="currentStudent">-->
+
+        <!--            <p:column headerText="Full Name">-->
+        <!--                <h:outputText value="#{currentStudent.fullName}" />-->
+        <!--            </p:column>-->
+
+        <!--            <p:column headerText="Program">-->
+        <!--                <h:outputText value="#{currentStudent.program}" />-->
+        <!--            </p:column>-->
+
+        <!--            <p:column headerText="Full Time">-->
+        <!--                <p:selectBooleanCheckbox-->
+        <!--                        value="#{currentStudent.fullTime}"-->
+        <!--                        disabled="true" />-->
+        <!--            </p:column>-->
+
+        <!--            <p:column headerText="Action">-->
+        <!--                <p:commandButton value="Remove"-->
+        <!--                                 action="#{studentListSession.remove(currentStudent)}"-->
+        <!--                                 process="@this"-->
+        <!--                                 update="studentsDataTable" />-->
+        <!--            </p:column>-->
+
+        <!--        </p:dataTable>-->
+
+
+
+
+
+    </h:form>
+
+
+</h:body>
 </html>
