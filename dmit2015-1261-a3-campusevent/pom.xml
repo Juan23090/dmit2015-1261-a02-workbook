@@ -15,6 +15,10 @@
         <maven.compiler.target>25</maven.compiler.target>
         <maven.compiler.source>25</maven.compiler.source>
         <junit.version>6.1.0</junit.version>
+        <!-- WildFly server used by the Arquillian integration tests.
+             Defaults to the server provisioned by `mvn verify`; override with
+             -Darquillian.jboss.home=/path/to/wildfly-41.0.1.Final to use a local WildFly install. -->
+        <arquillian.jboss.home>${project.build.directory}/arquillian-server</arquillian.jboss.home>
     </properties>
 
     <dependencies>
@@ -241,6 +245,18 @@ deploy, redeploy, undeploy or run your application.  -->
                             <goal>package</goal>
                         </goals>
                     </execution>
+                    <!-- Provision a separate, empty WildFly server in target/arquillian-server for
+                         the Arquillian integration tests run by `mvn verify`. -->
+                    <execution>
+                        <id>provision-arquillian-server</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>provision</goal>
+                        </goals>
+                        <configuration>
+                            <provisioning-dir>arquillian-server</provisioning-dir>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -294,6 +310,9 @@ deploy, redeploy, undeploy or run your application.  -->
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>
+                    <systemPropertyVariables>
+                        <jboss.home>${arquillian.jboss.home}</jboss.home>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
 

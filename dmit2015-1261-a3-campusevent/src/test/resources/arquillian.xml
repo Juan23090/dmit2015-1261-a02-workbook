@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian  https://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <engine>
+        <property name="deploymentExportPath">target/</property>
+    </engine>
+
+    <!-- jbossHome is passed in by the Maven Failsafe plugin (target/arquillian-server),
+         which `mvn verify` provisions automatically. No local WildFly path is required. -->
+    <container qualifier="wildfly-managed" default="true">
+        <configuration>
+            <property name="jbossHome">${jboss.home}</property>
+        </configuration>
+    </container>
+
+</arquillian>
