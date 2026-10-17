@@ -1,0 +1,184 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns:f="jakarta.faces.core"
+        xmlns:h="jakarta.faces.html"
+        xmlns:p="primefaces"
+        template="/WEB-INF/faces-templates/layout.xhtml"
+>
+
+    <ui:param name="title" value="Manage Campus Events"/>
+
+    <ui:param name="internalstyles"
+              value=".campus-events-table-header { display: flex; align-items:center; justify-content: space-between; flex-wrap: wrap; }"/>
+
+    <ui:define name="maincontent">
+
+        <h1>Manage Campus Events</h1>
+
+        <div class="card">
+            <h:form id="form">
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton id="newButton"
+                                         value="New Campus Event"
+                                         icon="pi pi-plus"
+                                         actionListener="#{currentCampusEventCrudView.onOpenNew}"
+                                         update=":dialogs:manage-campus-event-content"
+                                         oncomplete="PF('manageCampusEventDialog').show()"
+                                         styleClass="ui-button-success">
+                            <p:resetInput target=":dialogs:manage-campus-event-content"/>
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-campus-events" widgetVar="dtCampusEvents"
+                             value="#{currentCampusEventCrudView.campusEvents}"
+                             var="currentItem"
+                             reflow="true"
+                             rowKey="#{currentItem.id}"
+                             paginator="true" rows="10"
+                             paginatorPosition="bottom">
+
+                    <f:facet name="header">
+                        <div class="campus-events-table-header">
+                            <span style="font-weight: bold">Campus Events</span>
+                            <span class="filter-container ui-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <p:inputText id="globalFilter" onkeyup="PF('dtCampusEvents').filter()" placeholder="Search"/>
+                            </span>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Id" sortBy="#{currentItem.id}">
+                        <h:outputText value="#{currentItem.id}"/>
+                    </p:column>
+                    <p:column headerText="Title" sortBy="#{currentItem.title}" filterBy="#{currentItem.title}">
+                        <h:outputText value="#{currentItem.title}"/>
+                    </p:column>
+                    <p:column headerText="Location" filterBy="#{currentItem.location}">
+                        <h:outputText value="#{currentItem.location}"/>
+                    </p:column>
+                    <p:column headerText="Event Date" sortBy="#{currentItem.eventDate}">
+                        <h:outputText value="#{currentItem.eventDate}">
+                            <f:convertDateTime type="localDate" pattern="MMM d, yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Category" filterBy="#{currentItem.category}">
+                        <h:outputText value="#{currentItem.category}"/>
+                    </p:column>
+                    <p:column headerText="Description">
+                        <h:outputText value="#{currentItem.description}"/>
+                    </p:column>
+                    <p:column headerText="Organizer" filterBy="#{currentItem.organizerName}">
+                        <h:outputText value="#{currentItem.organizerName}"/>
+                    </p:column>
+
+                    <p:column exportable="false" ariaHeaderText="Actions">
+                        <p:commandButton icon="pi pi-pencil"
+                                         title="Edit"
+                                         update=":dialogs:manage-campus-event-content"
+                                         oncomplete="PF('manageCampusEventDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success"
+                                         process="@this">
+                            <f:setPropertyActionListener value="#{currentItem}"
+                                                         target="#{currentCampusEventCrudView.selectedCampusEvent}"/>
+                            <f:setPropertyActionListener value="#{currentItem.id}"
+                                                         target="#{currentCampusEventCrudView.selectedId}"/>
+                            <p:resetInput target=":dialogs:manage-campus-event-content"/>
+                        </p:commandButton>
+                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                         title="Delete"
+                                         process="@this"
+                                         oncomplete="PF('deleteCampusEventDialog').show()">
+                            <f:setPropertyActionListener value="#{currentItem}"
+                                                         target="#{currentCampusEventCrudView.selectedCampusEvent}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+
+            <h:form id="dialogs">
+                <p:dialog header="Campus Event Details" showEffect="fade" modal="true"
+                          widgetVar="manageCampusEventDialog" responsive="true">
+
+                    <p:outputPanel id="manage-campus-event-content" class="ui-fluid">
+                        <p:messages id="dialogMessages" showDetail="false"/>
+
+                        <p:outputPanel rendered="#{not empty currentCampusEventCrudView.selectedCampusEvent}">
+                            <div class="field">
+                                <p:outputLabel for="@next" value="Title"/>
+                                <p:inputText id="title"
+                                             value="#{currentCampusEventCrudView.selectedCampusEvent.title}"/>
+                                <p:message for="title"/>
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="@next" value="Location"/>
+                                <p:inputText id="location"
+                                             value="#{currentCampusEventCrudView.selectedCampusEvent.location}"/>
+                                <p:message for="location"/>
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="@next" value="Event Date"/>
+                                <p:datePicker id="eventDate"
+                                              value="#{currentCampusEventCrudView.selectedCampusEvent.eventDate}"
+                                              pattern="yyyy-MM-dd"
+                                              showIcon="true"/>
+                                <p:message for="eventDate"/>
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="@next" value="Category (optional)"/>
+                                <p:inputText id="category"
+                                             value="#{currentCampusEventCrudView.selectedCampusEvent.category}"/>
+                                <p:message for="category"/>
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="@next" value="Description (optional)"/>
+                                <p:inputTextarea id="description" rows="4"
+                                                 value="#{currentCampusEventCrudView.selectedCampusEvent.description}"/>
+                                <p:message for="description"/>
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="@next" value="Organizer Name"/>
+                                <p:inputText id="organizerName"
+                                             value="#{currentCampusEventCrudView.selectedCampusEvent.organizerName}"/>
+                                <p:message for="organizerName"/>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton id="saveButton"
+                                         value="Save"
+                                         icon="pi pi-check"
+                                         actionListener="#{currentCampusEventCrudView.onSave}"
+                                         update="manage-campus-event-content"
+                                         process="manage-campus-event-content @this"/>
+
+                        <p:commandButton id="cancelButton"
+                                         value="Cancel"
+                                         icon="pi pi-times"
+                                         onclick="PF('manageCampusEventDialog').hide()"
+                                         class="ui-button-secondary"
+                                         type="button"/>
+                    </f:facet>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="deleteCampusEventDialog" showEffect="fade" width="300"
+                                 message="Delete this campus event?" header="Confirm" severity="warn">
+                    <p:commandButton id="confirmDeleteButton" value="Yes" icon="pi pi-check"
+                                     actionListener="#{currentCampusEventCrudView.onDelete}"
+                                     process="@this"
+                                     oncomplete="PF('deleteCampusEventDialog').hide()"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                     onclick="PF('deleteCampusEventDialog').hide()"/>
+                </p:confirmDialog>
+            </h:form>
+
+        </div>
+
+    </ui:define>
+
+</ui:composition>

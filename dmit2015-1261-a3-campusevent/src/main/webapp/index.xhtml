@@ -1,0 +1,26 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns:h="jakarta.faces.html"
+        template="/WEB-INF/faces-templates/layout.xhtml">
+
+    <ui:param name="title" value="DMIT2015 Assignment 3 - CampusEvent"/>
+
+    <ui:define name="maincontent">
+
+        <h1>DMIT2015 Assignment 3 - Jakarta Persistence with CampusEvent</h1>
+
+        <p>Juan Rodriguez - DMIT2015-1261-A02</p>
+
+        <ul>
+            <li>
+                <h:link id="manageCampusEventsLink" outcome="/events/manage-campus-events" value="Manage Campus Events"/>
+            </li>
+            <li>
+                <a href="#{request.contextPath}/h2-console" target="_blank">Open H2 Console</a>
+                <span> - development/debugging only</span>
+            </li>
+        </ul>
+
+    </ui:define>
+</ui:composition>
