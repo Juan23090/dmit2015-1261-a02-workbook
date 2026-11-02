@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.*;
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
 public class HelloServlet extends HttpServlet {
     private String message;
-// add code to make a commit !!!!!1
+// add code to make a commit
     public void init() {
         message = "Juan Quiz 2!!!!!";
     }
@@ -23,6 +23,5 @@ public class HelloServlet extends HttpServlet {
         out.println("<h1>" + message + "</h1>");
         out.println("</body></html>");
     }
-
 
 }

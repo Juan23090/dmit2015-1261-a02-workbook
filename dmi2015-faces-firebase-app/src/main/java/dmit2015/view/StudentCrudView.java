@@ -1,7 +1,7 @@
 package dmit2015.view;
 
-import dmit2015.model.StudentCRUDView;
-import dmit2015.service.StudentCRUDViewService;
+import dmit2015.model.Student;
+import dmit2015.service.StudentService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -21,36 +21,36 @@ import java.util.List;
  * This Jakarta Faces backing bean class contains the data and event handlers
  * to perform CRUD operations using a PrimeFaces DataTable configured to perform CRUD.
  */
-@Named("currentStudentCRUDViewCrudView")
+@Named("currentStudentCrudView")
 @ViewScoped // create this object for one HTTP request and keep in memory if the next is for the same page
-public class StudentCRUDViewCrudView implements Serializable {
+public class StudentCrudView implements Serializable {
 
     @Inject
-    @Named("memoryStudentsService")
-    private StudentCRUDViewService studentCRUDViewService;
+    @Named("firebaseMultiTenantHttpClientStudentService")
+    private StudentService studentService;
 
     /**
-     * The selected StudentCRUDView instance to create, edit, update or delete.
+     * The selected Student instance to create, edit, update or delete.
      */
     @Getter
     @Setter
-    private StudentCRUDView selectedStudentCRUDView;
+    private Student selectedStudent;
 
     /**
-     * The unique name of the selected StudentCRUDView instance.
+     * The unique name of the selected Student instance.
      */
     @Getter
     @Setter
     private String selectedId;
 
     /**
-     * The list of StudentCRUDView objects fetched from the data source
+     * The list of Student objects fetched from the data source
      */
     @Getter
-    private List<StudentCRUDView> studentCRUDViews;
+    private List<Student> students;
 
     /**
-     * Fetch all StudentCRUDView from the data source.
+     * Fetch all Student from the data source.
      * <p>
      * If FacesContext message sent from init() method annotated with @PostConstruct in the Faces backing bean class are not shown on page:
      * 1) Remove the @PostConstruct annotation from the Faces backing bean class
@@ -63,18 +63,18 @@ public class StudentCRUDViewCrudView implements Serializable {
     @PostConstruct
     public void init() {
         try {
-            studentCRUDViews = studentCRUDViewService.getAllStudentCRUDViews();
+            students = studentService.getAllStudents();
         } catch (Exception e) {
-            Messages.addGlobalError("Error getting studentCRUDViews %s", e.getMessage());
+            Messages.addGlobalError("Error getting students %s", e.getMessage());
         }
     }
 
     /**
      * Event handler for the New button on the Faces crud page.
-     * Create a new selected StudentCRUDView instance to enter data for.
+     * Create a new selected Student instance to enter data for.
      */
     public void onOpenNew() {
-        selectedStudentCRUDView = new StudentCRUDView();
+        selectedStudent = new Student();
         selectedId = null;
     }
 
@@ -87,8 +87,8 @@ public class StudentCRUDViewCrudView implements Serializable {
     public void onGenerateData() {
         try {
             var faker = new Faker();
-            selectedStudentCRUDView = StudentCRUDView.of(faker);
-            selectedStudentCRUDView.setId(selectedId);
+            selectedStudent = Student.of(faker);
+            selectedStudent.setId(selectedId);
         } catch (Exception e) {
             Messages.addGlobalError("Error generating data {0}", e.getMessage());
         }
@@ -103,26 +103,26 @@ public class StudentCRUDViewCrudView implements Serializable {
 
             // If selectedId is null then create new data otherwise update current data
             if (selectedId == null) {
-                StudentCRUDView createdStudentCRUDView = studentCRUDViewService.createStudentCRUDView(selectedStudentCRUDView);
+                Student createdStudent = studentService.createStudent(selectedStudent);
 
                 // Send a Faces info message that create was successful
-                Messages.addGlobalInfo("Create was successful. {0}", createdStudentCRUDView.getId());
+                Messages.addGlobalInfo("Create was successful. {0}", createdStudent.getId());
                 // Reset the selected instance to null
-                selectedStudentCRUDView = null;
+                selectedStudent = null;
 
             } else {
-                studentCRUDViewService.updateStudentCRUDView(selectedStudentCRUDView);
+                studentService.updateStudent(selectedStudent);
 
                 Messages.addGlobalInfo("Update was successful");
 
             }
 
             // Fetch a list of objects from the data source
-            studentCRUDViews = studentCRUDViewService.getAllStudentCRUDViews();
-            PrimeFaces.current().ajax().update("dialogs:messages", "form:dt-StudentCRUDViews");
+            students = studentService.getAllStudents();
+            PrimeFaces.current().ajax().update("dialogs:messages", "form:dt-Students");
 
             // Hide the PrimeFaces dialog
-            PrimeFaces.current().executeScript("PF('manageStudentCRUDViewDialog').hide()");
+            PrimeFaces.current().executeScript("PF('manageStudentDialog').hide()");
         } catch (RuntimeException ex) { // handle application generated exceptions
             Messages.addGlobalError(ex.getMessage());
         } catch (Exception ex) {    // handle system generated exceptions
@@ -138,13 +138,13 @@ public class StudentCRUDViewCrudView implements Serializable {
     public void onDelete() {
         try {
             // Get the unique name of the Json object to delete
-            selectedId = selectedStudentCRUDView.getId();
-            studentCRUDViewService.deleteStudentCRUDViewById(selectedId);
+            selectedId = selectedStudent.getId();
+            studentService.deleteStudentById(selectedId);
             Messages.addGlobalInfo("Delete was successful for id of {0}", selectedId);
             // Fetch new data from the data source
-            studentCRUDViews = studentCRUDViewService.getAllStudentCRUDViews();
+            students = studentService.getAllStudents();
 
-            PrimeFaces.current().ajax().update("dialogs:messages", "form:dt-StudentCRUDViews");
+            PrimeFaces.current().ajax().update("dialogs:messages", "form:dt-Students");
         } catch (RuntimeException ex) { // handle application generated exceptions
             Messages.addGlobalError(ex.getMessage());
         } catch (Exception ex) {    // handle system generated exceptions

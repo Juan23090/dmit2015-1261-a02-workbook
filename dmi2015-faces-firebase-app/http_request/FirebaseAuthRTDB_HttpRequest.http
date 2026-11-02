@@ -11,9 +11,9 @@ POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={
 Content-Type: application/json
 
 {
-"email": "user02@dmit2015.ca",
-"password": "Password2015",
-"returnSecureToken": true
+  "email": "user02@dmit2015.ca",
+  "password": "Password2015",
+  "returnSecureToken": true
 }
 
 > {%
@@ -46,9 +46,9 @@ PUT {{firebaseBaseUri}}/{{jsonDataPath}}/{{idValue}}.json?auth={{idToken}}
 Content-Type: application/json
 
 {
-"id": "{{idValue}}",
-"propertyName1": "property1Value",
-"propertyName2": "property2Value"
+  "id": "{{idValue}}",
+  "propertyName1": "property1Value",
+  "propertyName2": "property2Value"
 }
 
 ### Read one JSON object by explicit id
@@ -71,9 +71,9 @@ PUT {{firebaseBaseUri}}/{{jsonDataPath}}/{{idValue}}.json?auth={{idToken}}
 Content-Type: application/json
 
 {
-"id": "{{idValue}}",
-"propertyName1": "updatedProperty1Value",
-"propertyName2": "updatedProperty2Value"
+  "id": "{{idValue}}",
+  "propertyName1": "updatedProperty1Value",
+  "propertyName2": "updatedProperty2Value"
 }
 
 ### Update part of a JSON object
@@ -84,7 +84,7 @@ PATCH {{firebaseBaseUri}}/{{jsonDataPath}}/{{idValue}}.json?auth={{idToken}}
 Content-Type: application/json
 
 {
-"propertyName1": "newValue"
+  "propertyName1": "newValue"
 }
 
 ### Delete one JSON object by explicit id

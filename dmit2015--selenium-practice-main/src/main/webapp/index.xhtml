@@ -1,0 +1,28 @@
+<!-- This is a Faces composition page that extends the layout template -->
+<ui:composition
+        template="/WEB-INF/faces-templates/layout.xhtml"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns:h="jakarta.faces.html"
+        xmlns:f="jakarta.faces.core"
+        xmlns:p="primefaces"
+        xmlns:o="omnifaces">
+
+    <!-- Page metadata for title, description, and keywords -->
+    <ui:param name="title" value="Lesson 15 Home" />
+
+    <!-- Define main content for the page -->
+    <ui:define name="maincontent">
+
+        <h1 id="homeHeading">Lesson 15 Home</h1>
+
+        <p>
+            This page is used for Selenium WebDriver navigation testing.
+        </p>
+
+        <h:link id="practiceLink"
+                value="Go to Selenium Practice"
+                outcome="/selenium-practice"/>
+
+    </ui:define>
+
+</ui:composition>

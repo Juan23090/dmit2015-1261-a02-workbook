@@ -1,3 +1,4 @@
+package dmit2015.service;
 
 import dmit2015.view.FirebaseAuthSignInSession;
 import dmit2015.model.Student;
@@ -26,39 +27,47 @@ import java.util.UUID;
  * <p>
  * Verify that you have set up the following Rules in your Firebase Realtime Database
  * where the multi-tenant data is in a root path name "multi_tenant_data".
- *
+ * <p>
  * {
- *   "rules": {
- *     "multi_tenant_data": {
- *         "Student": {
- *           "$uid": {
- *             // Allow only authenticated content owners access to their data
- *             ".read": "auth !== null && auth.uid === $uid",
- *             ".write": "auth !== null && auth.uid === $uid"
- *           }
- *         }
- *       }
- *   }
+ * "rules": {
+ * "multi_tenant_data": {
+ * "Student": {
+ * "$uid": {
+ * // Allow only authenticated content owners access to their data
+ * ".read": "auth !== null && auth.uid === $uid",
+ * ".write": "auth !== null && auth.uid === $uid"
+ * }
+ * }
+ * }
+ * }
  * }
  */
 
 @Named("firebaseMultiTenantHttpClientStudentService")
 @ApplicationScoped
 public class FirebaseMultiTenantHttpClientStudentService implements StudentService {
-    /** The base URL to the Firebase Realtime Database that is defined in
+    /**
+     * The base URL to the Firebase Realtime Database that is defined in
      * `src/main/resources/META-INF/microprofile-config.properties` file.
-     * */
+     *
+     */
     @Inject
     @ConfigProperty(name = "firebase.rtdb.base.url")
     private String firebaseRtdbBaseUrl;
 
-    /** The URL to the Firebase Realtime Database to access all data.*/
+    /**
+     * The URL to the Firebase Realtime Database to access all data.
+     */
     private String jsonAllDataPath;
 
-    /** HttpClient is native Java library for sending Http Request to a web server */
+    /**
+     * HttpClient is native Java library for sending Http Request to a web server
+     */
     private HttpClient httpClient;
 
-    /** Jsonb is used for converting Java objects to a JSON string or visa-versa */
+    /**
+     * Jsonb is used for converting Java objects to a JSON string or visa-versa
+     */
     private Jsonb jsonb;
 
     @Inject
@@ -99,7 +108,7 @@ public class FirebaseMultiTenantHttpClientStudentService implements StudentServi
         // Create a Http Request for sending a Http POST request to push new data
         var httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(jsonAllDataPath))
-                .header("Content-Type","application/json")
+                .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(requestBodyJson, StandardCharsets.UTF_8))
                 .build();
         try {
@@ -139,7 +148,7 @@ public class FirebaseMultiTenantHttpClientStudentService implements StudentServi
             // Create an GET Http Request to fetch all data
             var httpRequest = HttpRequest.newBuilder()
                     .uri(URI.create(jsonSingleDataPath))
-                    .header("Content-Type","application/json")
+                    .header("Content-Type", "application/json")
                     .GET()
                     .build();
             // Send the GET Http Request
@@ -181,7 +190,7 @@ public class FirebaseMultiTenantHttpClientStudentService implements StudentServi
         // Create an GET Http Request to fetch all data
         var httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(jsonAllDataPath))
-                .header("Content-Type","application/json")
+                .header("Content-Type", "application/json")
                 .GET()
                 .build();
         try {
@@ -192,7 +201,8 @@ public class FirebaseMultiTenantHttpClientStudentService implements StudentServi
                 // Get the body of the Http Response
                 var responseBodyJson = httpResponse.body();
                 // Convert the responseBodyJson to an LinkedHashMap<String, Student>
-                LinkedHashMap<String, Student> responseData = jsonb.fromJson(responseBodyJson, new LinkedHashMap<String, Student>() {}.getClass().getGenericSuperclass());
+                LinkedHashMap<String, Student> responseData = jsonb.fromJson(responseBodyJson, new LinkedHashMap<String, Student>() {
+                }.getClass().getGenericSuperclass());
                 if (responseData != null) {
                     // Convert the LinkedHashMap<String, Student> to List<Student>
                     return responseData.entrySet()
@@ -236,7 +246,7 @@ public class FirebaseMultiTenantHttpClientStudentService implements StudentServi
         // Create and Http Request to send an HTTP PUT request to write over existing data
         var httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(jsonSingleDataPath))
-                .header("Content-Type","application/json")
+                .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(requestBodyJson, StandardCharsets.UTF_8))
                 .build();
         try {
@@ -261,7 +271,7 @@ public class FirebaseMultiTenantHttpClientStudentService implements StudentServi
      */
     @Override
     public void deleteStudentById(String id) {
-         // Build the url path to object to access
+        // Build the url path to object to access
         String firebaseUserId = firebaseAuthSignInSession.getFirebaseAuthSignInResponsePayload().getLocalId();
         String firebaseToken = firebaseAuthSignInSession.getFirebaseAuthSignInResponsePayload().getIdToken();
         String jsonSingleDataPath = String.format("%s/%s/%s/%s/%s.json?auth=%s",
@@ -287,7 +297,7 @@ public class FirebaseMultiTenantHttpClientStudentService implements StudentServi
             }
 
         } catch (Exception e) {
-           throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 }

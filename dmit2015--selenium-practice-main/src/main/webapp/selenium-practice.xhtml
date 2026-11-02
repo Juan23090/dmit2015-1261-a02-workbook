@@ -1,0 +1,90 @@
+<!-- This is a Faces composition page that extends the layout template -->
+<ui:composition
+        template="/WEB-INF/faces-templates/layout.xhtml"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns:h="jakarta.faces.html"
+        xmlns:f="jakarta.faces.core"
+        xmlns:p="primefaces"
+        xmlns:o="omnifaces">
+
+    <!-- Page metadata for title, description, and keywords -->
+    <ui:param name="title" value="Functional UI Testing Practice"/>
+
+    <!-- Define main content for the page -->
+    <ui:define name="maincontent">
+
+        <h1 id="practiceHeading">Functional UI Testing Practice</h1>
+
+        <p>
+            Use this page to practice Selenium WebDriver browser automation.
+        </p>
+
+        <h:form id="practiceForm">
+
+            <h:panelGrid columns="2" cellpadding="6">
+
+                <p:outputLabel for="searchTerm" value="Search Term"/>
+
+                <h:panelGroup>
+                    <p:inputText id="searchTerm"
+                                 value="#{seleniumPracticeView.searchTerm}"
+                                 required="true"
+                                 requiredMessage="Search term is required."/>
+
+                    <p:message id="searchTermMessage"
+                               for="searchTerm"/>
+                </h:panelGroup>
+
+                <p:outputLabel for="searchMode" value="Search Mode"/>
+
+                <p:selectOneMenu id="searchMode"
+                                 value="#{seleniumPracticeView.searchMode}">
+                    <f:selectItem itemLabel="Contains" itemValue="Contains"/>
+                    <f:selectItem itemLabel="Starts With" itemValue="Starts With"/>
+                    <f:selectItem itemLabel="Exact Match" itemValue="Exact Match"/>
+                </p:selectOneMenu>
+
+                <p:outputLabel for="inStockOnly" value="Only show stores with stock"/>
+
+                <p:selectBooleanCheckbox id="inStockOnly"
+                                         value="#{seleniumPracticeView.inStockOnly}"/>
+
+            </h:panelGrid>
+
+            <p style="margin-top: 1rem;">
+                <p:commandButton id="submitButton"
+                                 value="Submit"
+                                 action="#{seleniumPracticeView.onSubmit}"
+                                 update="@form"/>
+
+                <p:commandButton id="clearButton"
+                                 value="Clear"
+                                 action="#{seleniumPracticeView.onClear}"
+                                 update="@form"
+                                 process="@this"
+                                 styleClass="ui-button-secondary"/>
+
+                <p:button id="goHomeButton"
+                          value="Go Home"
+                          outcome="/index"
+                          styleClass="ui-button-outlined"/>
+            </p>
+
+            <p:outputPanel id="resultPanel"
+                           layout="block"
+                           rendered="#{seleniumPracticeView.submitted}"
+                           style="margin-top: 1rem; padding: 1rem; border: 1px solid #999;">
+
+                <h2>Search Request Submitted</h2>
+
+                <p id="resultText">
+                    #{seleniumPracticeView.resultText}
+                </p>
+
+            </p:outputPanel>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
